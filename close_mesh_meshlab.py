@@ -18,10 +18,9 @@ meshlabserver_path = 'C:\\Program Files\\VCG\\MeshLab'
 os.environ['PATH'] = meshlabserver_path + os.pathsep + os.environ['PATH']
 
 cut_ground_threshold=0.09
-# Open a mesh -> implicit in the FilterScript
-# 2.) Define filters... 
-# 3.) Find filters in the https://github.com/3DLIRIOUS/MeshLabXML repo 
-#     or in Python console import the package and use help, eg. help(mlx.clean) 
+
+# Find filters in the https://github.com/3DLIRIOUS/MeshLabXML repo
+#1st arg is input mesh, 2nd is output mesh, 3rd boolean flag for surface poisson reconstruction
 import_mesh = mlx.FilterScript(file_in=sys.argv[1],
         file_out=sys.argv[2])
 
@@ -31,14 +30,13 @@ mlx.delete.small_parts(import_mesh, ratio=0.8)
 # Cleaning
 mlx.clean.merge_vert(import_mesh, threshold=0.003)
 mlx.remesh.simplify(import_mesh, texture=False, faces=10000, preserve_normal=True)
-
 mlx.delete.faces_from_nonmanifold_edges(import_mesh)
 mlx.delete.duplicate_faces(import_mesh)
 #duplicate_verts() not found??? error
 #mlx.delete.duplicate_verts(import_mesh)
-
 mlx.delete.nonmanifold_edge(import_mesh)
 mlx.delete.nonmanifold_vert(import_mesh)
+
 mlx.compute.measure_geometry(import_mesh)
 
 #save the computed geometry to a log file
